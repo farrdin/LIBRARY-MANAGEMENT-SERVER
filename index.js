@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -22,6 +22,18 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
+
+    const AllData = client.db("PRB9-A11").collection("All");
+
+    // All Data
+    app.get("/all", async (req, res) => {
+      const cursor = AllData.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
