@@ -57,6 +57,15 @@ async function run() {
     });
 
     //  Add Books
+  app.get("/add", async (req, res) => {
+    let query = {};
+    if (req.query?.email) {
+      query = { email: req.query?.email };
+    }
+    const result = await Add.find(query).toArray();
+    res.send(result);
+  });
+
     app.post("/add", async (req, res) => {
       const add = req.body;
       const result = await Add.insertOne(add);
