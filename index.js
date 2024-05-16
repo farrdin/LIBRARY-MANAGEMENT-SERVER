@@ -24,6 +24,7 @@ async function run() {
     await client.connect();
 
     const AllData = client.db("PRB9-A11").collection("All");
+    const Borrowed = client.db("PRB9-A11").collection("Borrowed");
 
     // All Data
     app.get("/all", async (req, res) => {
@@ -31,8 +32,15 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-
-
+    // Borrow Book
+    app.get("/borrowed", async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query?.email };
+      }
+      const result = await Borrowed.find(query).toArray();
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
