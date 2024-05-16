@@ -25,6 +25,7 @@ async function run() {
 
     const AllData = client.db("PRB9-A11").collection("All");
     const Borrowed = client.db("PRB9-A11").collection("Borrowed");
+    const Add = client.db("PRB9-A11").collection("Add");
 
     // All Data
     app.get("/all", async (req, res) => {
@@ -52,6 +53,13 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await Borrowed.deleteOne(query);
+      res.send(result);
+    });
+
+    //  Add Books
+    app.post("/add", async (req, res) => {
+      const add = req.body;
+      const result = await Add.insertOne(add);
       res.send(result);
     });
 
