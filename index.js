@@ -42,11 +42,18 @@ async function run() {
       res.send(result);
     });
 
-        app.post("/borrowed", async (req, res) => {
-          const borrow = req.body;
-          const result = await Borrowed.insertOne(borrow);
-          res.send(result);
-        });
+    app.post("/borrowed", async (req, res) => {
+      const borrow = req.body;
+      const result = await Borrowed.insertOne(borrow);
+      res.send(result);
+    });
+
+    app.delete("/borrowed/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await Borrowed.deleteOne(query);
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
