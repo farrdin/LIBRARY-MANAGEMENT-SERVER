@@ -42,6 +42,12 @@ async function run() {
       res.send(result);
     });
 
+        app.post("/borrowed", async (req, res) => {
+          const borrow = req.body;
+          const result = await Borrowed.insertOne(borrow);
+          res.send(result);
+        });
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
