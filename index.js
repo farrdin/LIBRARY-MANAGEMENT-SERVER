@@ -30,6 +30,26 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+    // UpdateBook Quanity when return
+    app.patch("/all/incr/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $inc: { quantity: 1 },
+      };
+      const result = await AllData.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+    // UpdateBook Quanity when borrow
+    app.patch("/all/decr/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $inc: { quantity: -1 },
+      };
+      const result = await AllData.updateOne(filter, updateDoc);
+      res.send(result);
+    });
 
     const Borrowed = client.db("PRB9-A11").collection("Borrowed");
     // BorrowED
@@ -45,6 +65,7 @@ async function run() {
     app.post("/borrowed", async (req, res) => {
       const borrow = req.body;
       const result = await Borrowed.insertOne(borrow);
+
       res.send(result);
     });
 
@@ -75,19 +96,11 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const updateBook = req.body;
-      console.log(updateBook);
       const updateDoc = {
         $set: updateBook,
       };
-      try {
-        const result = await Add.updateOne(filter, updateDoc);
-        res.send(result);
-      } catch (error) {
-        console.error("Error updating document:", error);
-        res
-          .status(500)
-          .send({ error: "An error occurred while updating the document." });
-      }
+      const result = await Add.updateOne(filter, updateDoc);
+      res.send(result);
     });
 
     await client.db("admin").command({ ping: 1 });
