@@ -10,7 +10,12 @@ const port = process.env.PORT || 5000;
 // Middleware//
 app.use(
   cors({
-    origin: ["https://prb9-a11.web.app/", "https://prb9-a11.firebaseapp.com/"],
+    origin: [
+      "https://prb9-a11.netlify.app",
+      "http://localhost:8000",
+      "https://prb9-a11.web.app",
+      "https://prb9-a11.firebaseapp.com",
+    ],
     credentials: true,
   })
 );
@@ -41,6 +46,12 @@ const client = new MongoClient(uri, {
   },
 });
 
+const cookieOption = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+};
+
 async function run() {
   try {
     // await client.connect();
@@ -52,17 +63,13 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "1h",
       });
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      });
+      res.cookie("token", token, cookieOption);
       res.send({ Success: true });
     });
     app.post("/logout", async (req, res) => {
       const user = req.body;
       console.log("logging out", user);
-      res.clearCookie("token", { maxAge: 0 });
+      res.clearCookie("token", { ...cookieOption, maxAge: 0 });
       res.send({ success: true });
     });
 
